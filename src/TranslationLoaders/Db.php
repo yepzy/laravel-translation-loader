@@ -2,6 +2,7 @@
 
 namespace Spatie\TranslationLoader\TranslationLoaders;
 
+use Illuminate\Support\Facades\Schema;
 use Spatie\TranslationLoader\LanguageLine;
 use Spatie\TranslationLoader\Exceptions\InvalidConfiguration;
 
@@ -9,9 +10,11 @@ class Db implements TranslationLoader
 {
     public function loadTranslations(string $locale, string $group): array
     {
-        $model = $this->getConfiguredModelClass();
+        if (Schema::hasTable('language_lines')) {
+            $model = $this->getConfiguredModelClass();
 
-        return $model::getTranslationsForGroup($locale, $group);
+            return $model::getTranslationsForGroup($locale, $group);
+        }
     }
 
     protected function getConfiguredModelClass(): string
